@@ -1,11 +1,12 @@
 const puppeteer = require('puppeteer');
 const csvWriter = require('csv-write-stream');
+const argv = require('yargs').argv;
 const fs = require('fs');
 
 const SELECTOR = require('./utils/selectors');
 const actualLog = require('./data/log.json');
 
-const TO_SAVE = parseInt(process.env.TOSAVE, 0) || 1;
+const TO_SAVE = parseInt(argv.files, 0) || 1;
 
 async function run() {
   const browser = await puppeteer.launch({
@@ -22,7 +23,9 @@ async function run() {
     : 0;
   const LOG = [...actualLog];
 
-  for (let index = LAST_MANGA + 1; index <= (LAST_MANGA + TO_SAVE); index++) {
+  for (let index = LAST_MANGA + 1; index <= LAST_MANGA + TO_SAVE; index++) {
+    const TIME = 10000 + index;
+    await page.waitFor(TIME);
     console.log(`Fetching manga id:${index}`);
     await page.goto(`https://www.mangaupdates.com/series.html?id=${index}`);
     await page.screenshot({ path: `screenshots/manga_${index}.jpg` });
@@ -102,7 +105,6 @@ async function run() {
 
     let categories = [];
     for (let i = 1; i <= categoryLength + 1; i++) {
-      await page.waitFor(500);
       const CATEGORY_SELECTOR = SELECTOR.CATEGORY.replace('*INDEX*', i);
 
       let category = await page.evaluate(sel => {
