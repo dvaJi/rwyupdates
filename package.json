@@ -19,7 +19,10 @@
   "homepage": "https://github.com/dvaJi/rwyupdates#readme",
   "dependencies": {
     "csv-write-stream": "^2.0.0",
-    "puppeteer": "^1.11.0",
-    "yargs": "^12.0.5"
+    "date-fns": "^2.10.0",
+    "franc-all": "^6.0.0",
+    "iconv-lite": "^0.5.1",
+    "puppeteer": "^2.1.1",
+    "yargs": "^15.3.0"
   }
 }
