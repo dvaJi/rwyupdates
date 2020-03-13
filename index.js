@@ -28,7 +28,7 @@ async function run() {
   for (let index = LAST_MANGA + 1; index <= LAST_MANGA + TO_SAVE; index++) {
     const TIME = 15000 + Math.floor(Math.random() * (100 - 1 + 1) + 1);
     await page.waitFor(TIME);
-    console.log(`Fetching manga id:${index}`);
+    console.log(`Fetching manga id: ${index}`);
     await page.goto(`https://www.mangaupdates.com/series.html?id=${index}`);
     await page.screenshot({ path: `screenshots/manga_${index}.jpg` });
 
@@ -168,7 +168,7 @@ async function run() {
         const element = html[index];
         authors.push({
           name: element.innerText.trim(),
-          id: Number(element.getAttribute("href").replace(/\D+/g, ''))
+          id: Number(element.getAttribute("href").replace(/\D+/g, ""))
         });
       }
 
@@ -184,7 +184,7 @@ async function run() {
         const element = html[index];
         artists.push({
           name: element.innerText.trim(),
-          id: Number(element.getAttribute("href").replace(/\D+/g, ''))
+          id: Number(element.getAttribute("href").replace(/\D+/g, ""))
         });
       }
 
@@ -224,11 +224,15 @@ async function run() {
     }, SELECTOR.COVER);
 
     const userRating = await page.evaluate(sel => {
-      const doc = document.querySelector(sel).innerHTML;
-      return doc
-        .substring(0, doc.indexOf("<br>"))
-        .replace('<span class="d-none d-sm-inline">', "")
-        .replace("</span>", "");
+      const elements = document.querySelector(sel).childNodes;
+      const lastIndex = elements[0].wholeText.lastIndexOf(":");
+      const avg = Number(elements[0].wholeText.substring(lastIndex + 1).trim());
+      const count = Number(elements[2].wholeText.replace(/\D+/g, ""));
+
+      return {
+        avg,
+        count
+      };
     }, SELECTOR.USER_RATING);
 
     const serie = {
